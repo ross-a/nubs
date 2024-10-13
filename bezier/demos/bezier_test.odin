@@ -69,7 +69,7 @@ update :: proc() {
 
 	// Draw   ------------------------------
 	rl.BeginDrawing()
-	rl.ClearBackground(rl.BLACK)
+	rl.ClearBackground(rl.BLUE)
 
 	if with_raylib {
 		pt_cnt := 3
@@ -92,7 +92,9 @@ update :: proc() {
 }
 
 main :: proc() {
-	when ODIN_ARCH != .wasm32 && ODIN_ARCH != .wasm64p32 {
+	when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
+    context = ctx // this is important! for [dynamic]stuff in -target=freestanding_wasm
+  } else {
 		ta := mem.Tracking_Allocator{};
 		mem.tracking_allocator_init(&ta, context.allocator);
 		context.allocator = mem.tracking_allocator(&ta);
@@ -105,10 +107,12 @@ main :: proc() {
 		rl.InitWindow(WIDTH, HEIGHT, "Bezier")
 		rl.SetTargetFPS(60)
 
-		for !rl.WindowShouldClose() {
-			update()
+		when ODIN_ARCH != .wasm32 && ODIN_ARCH != .wasm64p32 {			
+			for !rl.WindowShouldClose() {
+				update()
+			}
+			rl.CloseWindow()
 		}
-		rl.CloseWindow()
 	}
 
 	when ODIN_ARCH != .wasm32 && ODIN_ARCH != .wasm64p32 {	

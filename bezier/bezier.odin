@@ -82,8 +82,9 @@ Bezier_Type :: enum { QUADRATIC, CUBIC }
 
  // get one lut from many linked up bezier curves
  get_lut_from_many_bezier :: proc(bez: []Bezier, divisions: []int) -> [][2]f32 {
-   if len(bez) != len(divisions) {
-     log.error("mismatched lengths")
+	 if len(bez) != len(divisions) {
+		 // can't use log. or fmt.  in wasm!
+	   //log.error("mismatched lengths")
    }
 
    cnt := 0
@@ -99,7 +100,7 @@ Bezier_Type :: enum { QUADRATIC, CUBIC }
      if idx > 0 {
        idx -= 1 // rewrite last point as these curves should be connected!
        if luts[idx] != lut[0] {
-         log.error("unconnected curves!", luts[idx], lut[0])
+         //log.error("unconnected curves!", luts[idx], lut[0])
        }
      }
      for j in 0..<len(lut) {
